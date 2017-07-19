@@ -1,3 +1,6 @@
+export VISUAL=vim
+export EDITOR="$VISUAL"
+
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
 HISTSIZE=1000
