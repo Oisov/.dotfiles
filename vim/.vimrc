@@ -190,6 +190,7 @@ set mouse=r
 set cmdheight=2
  
 " Display line numbers on the left
+set relativenumber
 set number
  
 " Quickly time out on keycodes, but never time out on mappings
@@ -239,7 +240,10 @@ inoremap II <C-o>I
 inoremap CL <C-o>c$
 inoremap CC <C-o>cc
 set wildcharm=<C-z> "Enables <C-z> to use autocomplete in commands
- 
+
+"This unsets the "last search pattern" register by hitting return
+nnoremap <CR> :noh<CR>
+
 " ==========================================
 "      Plugins keybindings
 " ==========================================
