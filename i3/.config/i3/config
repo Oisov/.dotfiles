@@ -71,14 +71,29 @@ font pango:Helvetica Neue, FontAwesome 11
 floating_modifier $mod
 
 # Start a terminal
-bindsym $mod+Return exec $term
+bindsym $mod+Return      exec $term
+
+# Start the browsers
+bindsym $mod+b           exec $browser-play
+bindsym $mod+w           exec $browser-work
+
+# Start ranger
+bindsym $mod+r          exec $term -e ranger
+
+# Start calculator
+bindsym $mod+a          exec $term -e qalc
+
+bindsym $mod+Tab                workspace back_and_forth
 
 # Kill focused window
 bindsym $mod+Shift+q kill
 
 
 # rofi
-bindsym $mod+d exec rofi -show run -lines 3 -eh 2 -width 100 -padding 350 -opacity "85" -bw 0 -bc "$bg-color" -bg "$bg-color" -fg "$text-color" -hlbg "$bg-color" -hlfg -fullscreen
+bindsym $mod+d exec rofi -show run -lines 3 -eh 2 -width 100 -padding 350  -bw 0 -bc "$bg-color" -bg "$bg-color" -fg "$text-color" -hlbg "$bg-color" -hlfg -fullscreen
+
+bindsym $mod+Shift+d    gaps inner current set 0; gaps outer current set 0
+bindsym $mod+Shift+t    gaps inner current set $gaps_inner; gaps outer current set $gaps_outer
 
 # Screenshot (now provided by Plasma)
 bindsym Print exec --no-startup-id spectacle
@@ -124,8 +139,8 @@ bindsym $mod+v split v
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
+# bindsym $mod+s layout stacking
+# bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
@@ -135,7 +150,7 @@ bindsym $mod+Shift+space floating toggle
 bindsym $mod+space focus mode_toggle
 
 # focus the parent container
-bindsym $mod+a focus parent
+# bindsym $mod+a focus parent
 
 # focus the child container
 #bindsym $mod+d focus child
@@ -165,9 +180,6 @@ bindsym $mod+9 workspace $workspace9
 bindsym $mod+0 workspace $workspace10
  
 # move focused container to workspace
-bindsym $mod+Shift+1 move container to workspace $workspace1
-bindsym $mod+Shift+2 move container to workspace $workspace2
-bindsym $mod+Shift+3 move container to workspace $workspace3
 bindsym $mod+Shift+4 move container to workspace $workspace4
 bindsym $mod+Shift+5 move container to workspace $workspace5
 bindsym $mod+Shift+6 move container to workspace $workspace6
@@ -184,6 +196,13 @@ bindsym $mod+Shift+r restart
 # Audio controls (now provided by Plasma)
 # bindsym XF86AudioLowerVolume exec ~/audio.sh --down
 # bindsym XF86AudioRaiseVolume exec ~/audio.sh --up
+
+# Use YUIO to resize instead of resize mode
+bindsym $mod+Shift+y	resize shrink width 10 px or 5 ppt
+bindsym $mod+Shift+u	resize grow height 10 px or 5 ppt
+bindsym $mod+Shift+i	resize shrink height 10 px or 5 ppt
+bindsym $mod+Shift+o	resize grow width 10 px or 5 ppt
+
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -209,7 +228,7 @@ mode "resize" {
         bindsym Escape mode "default"
 }
 
-bindsym $mod+r mode "resize"
+bindsym $mod+c mode "resize"
 
 # i3bar
 #bar {
@@ -224,6 +243,8 @@ bindsym $mod+r mode "resize"
 #}
 
 # Starting things with i3
+#Makes the mouse invisible after a brief period
+exec --no-startup-id unclutter
 # exec --no-startup-id xcompmgr -C &    # Bare compositor to allow transparency
 for_window [class="yakuake"] floating enable;
 
