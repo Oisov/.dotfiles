@@ -12,32 +12,36 @@ I denne oppgaven
 
  __Fag__:
 
- __Anbefalte
+ __Anbefalte trinn__:
 
  __Tema__:
 
  __Tidsbruk__:
 
 
- ## Kompetansemål {.challenge}
+## Kompetansemål {.challenge}
 
 
 
- ## Forslag til læringsmål {.challenge}
+## Forslag til læringsmål {.challenge}
 
 
 
- ## Forslag til vurderingskriterier {.challenge}
+## Forslag til vurderingskriterier {.challenge}
+
+- [ ] Eleven viser middels måloppnåelse ved å fullføre oppgaven.
+
+- [ ] Eleven viser høy måloppnåelse ved å videreutvikle egen kode basert på oppgaven, for eksempel ved å gjøre en eller flere av variasjonene nedenfor.
 
  
- ## Forutsetninger og utstyr {.challenge}
+## Forutsetninger og utstyr {.challenge}
 
  - [ ]  __Forutsetninger__:
 
  - [ ]  __Utstyr__: Datamaskin med Python installert.
 
 
- # Fremgangsmåte
+# Fremgangsmåte
 
  Her kommer tips, erfaring og utfordringer til de ulike stegene i den faktiske oppgaven. [Klikk her for å se oppgaveteksten.](../OPPGAVENAVN/OPPGAVENAVN.html){target=_blank}
 
