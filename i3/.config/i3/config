@@ -78,7 +78,7 @@ bindsym $mod+b           exec $browser-play
 bindsym $mod+w           exec $browser-work
 
 # Start ranger
-bindsym $mod+r          exec $term -e ranger
+bindsym $mod+r          exec /bin/zsh $term -e ranger
 
 # Start calculator
 bindsym $mod+a          exec $term -e qalc
