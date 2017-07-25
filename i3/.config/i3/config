@@ -7,8 +7,8 @@
  
 #Basic settings, please see http://i3wm.org/docs/userguide.html for a complete reference!
  
-set $browser-work chromium-browser
-set $browser-play Firefox
+set $browser-work chromium
+set $browser-play firefox
  
 set $term konsole
 set $mod Mod4
@@ -74,8 +74,8 @@ floating_modifier $mod
 bindsym $mod+Return      exec $term
 
 # Start the browsers
-bindsym $mod+b           exec $browser-play
-bindsym $mod+w           exec $browser-work
+bindsym $mod+b           exec --no-startup-id $browser-play
+bindsym $mod+w           exec --no-startup-id $browser-work
 
 # Start ranger
 bindsym $mod+r          exec /bin/zsh $term -e ranger
