@@ -6,7 +6,8 @@
 #
  
 #Basic settings, please see http://i3wm.org/docs/userguide.html for a complete reference!
- 
+
+
 set $browser-work chromium
 set $browser-play firefox
  
