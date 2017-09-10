@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# contributor: Mads D. Kristensen <madsdk@gmail.com>
+# key: prop
+# group: environments
+# name: \begin{proposition} ... \end{equation}
+# --
+\begin{proposition}
+  $0
+\end{proposition}

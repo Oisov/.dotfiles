@@ -1,0 +1,9 @@
+## -*- mode: snippet -*-
+# contributor: Mads D. Kristensen <madsdk@gmail.com>
+# key: question
+# group: question
+# name: \begin{question} ... \end{question}
+# --
+\begin{question}
+  $0
+\end{question}

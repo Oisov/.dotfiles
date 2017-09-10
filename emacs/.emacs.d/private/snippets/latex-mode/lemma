@@ -1,0 +1,9 @@
+## -*- mode: snippet -*-
+# contributor: Mads D. Kristensen <madsdk@gmail.com>
+# key: lemma
+# group: environment
+# name: \begin{lemma} ... \end{lemma}
+# --
+\begin{lemma}
+  $0
+\end{lemma}
