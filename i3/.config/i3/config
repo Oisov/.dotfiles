@@ -16,15 +16,15 @@ set $mod Mod4
  
 #i3wm
 #Needed for i3-gaps
-set $gaps_inner 15
-set $gaps_outer 15
+#set $gaps_inner 15
+#set $gaps_outer 15
 #General settnings
 
-hide_edge_borders both
+# hide_edge_borders both
 for_window [class="^.*"] border pixel 0
-gaps inner $gaps_inner
-gaps outer $gaps_outer
-smart_gaps on
+# gaps inner $gaps_inner
+# gaps outer $gaps_outer
+# smart_gaps on
 
 set $black       #212121
 set $darkblack   #000000
@@ -36,7 +36,7 @@ set $yellow      #fabd2f
 set $darkyellow  #d79921
 set $blue        #83a598
 set $darkblue    #458588
-set $magenta     #d3869b
+set $magenta     #dexec conky -c $HOME/.config/conky/conky.conf3869b
 set $darkmagenta #b16286
 set $cyan        #8ec07c
 set $darkcyan    #689d6a
@@ -249,18 +249,30 @@ bindsym $mod+c mode "resize"
 # Starting things with i3
 #Makes the mouse invisible after a brief period
 exec --no-startup-id unclutter
-# exec --no-startup-id xcompmgr -C &    # Bare compositor to allow transparency
+exec --no-startup-id xcompmgr -C &    # Bare compositor to allow transparency
 for_window [class="yakuake"] floating enable;
+
+bindsym Mod1+Return exec --no-startup-id yakuake
 
 ## Plasma Integration
 # Try to kill the wallpaper set by Plasma (it takes up the entire workspace and hides everythiing)
 exec --no-startup-id wmctrl -c Plasma
 for_window [title="Desktop — Plasma"] kill; floating enable; border none
+exec --no-startup-id emacs --daemon
 
 # Run at every restart of i3
-exec_always --no-startup-id feh --bg-scale ~/Pictures/Wallpaper/1920x1080.png #Sets the default wallpaper
+exec_always --no-startup-id feh --bg-scale ~/Pictures/Wallpaper/1920x1080.png
+#Sets the default wallpaper
 exec_always --no-startup-id conky -dq -c ~/.conkyrc
-exec_always --no-startup-id ~/run_polybar.sh
+# exec_always exec conky
+# exec_always --no-startup-id ~/run_polybar.sh
+
+exec_always --no-startup-id i3bar
+bar {
+        mode invisible
+        status_command i3status
+        tray_output primary
+}
 
 ## Avoid tiling popups, dropdown windows from plasma
 # for the first time, manually resize them, i3 will remember the setting for floating windows
