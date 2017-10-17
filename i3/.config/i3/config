@@ -84,7 +84,7 @@ bindsym $mod+r          exec /bin/zsh $term -e ranger
 # Start calculator
 bindsym $mod+a          exec $term -e qalc
 
-bindsym $mod+Tab                workspace back_and_forth
+bindsym $mod+Tab        workspace back_and_forth
 
 # Kill focused window
 bindsym $mod+Shift+q kill
@@ -259,9 +259,10 @@ bindsym Mod1+Return exec --no-startup-id yakuake
 exec --no-startup-id wmctrl -c Plasma
 for_window [title="Desktop — Plasma"] kill; floating enable; border none
 exec --no-startup-id emacs --daemon
+bindsym Mod1+e       exec emacsclient -n -c 
 
 # Run at every restart of i3
-exec_always --no-startup-id feh --bg-scale ~/Pictures/Wallpaper/1920x1080.png
+exec_always --no-startup-id feh --bg-scale ~/Pictures/Wallpaper/house.jpeg
 #Sets the default wallpaper
 exec_always --no-startup-id conky -dq -c ~/.conkyrc
 # exec_always exec conky
@@ -273,6 +274,9 @@ bar {
         status_command i3status
         tray_output primary
 }
+
+bindsym $mod+Shift+m move container to output right; focus output right
+bindsym $mod+Shift+f focus output right
 
 ## Avoid tiling popups, dropdown windows from plasma
 # for the first time, manually resize them, i3 will remember the setting for floating windows
