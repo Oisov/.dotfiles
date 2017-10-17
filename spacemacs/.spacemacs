@@ -31,6 +31,7 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     javascript
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
@@ -138,14 +139,15 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(monokai
+   dotspacemacs-themes '(dracula
+                         monokai
                          spacemacs-dark)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("Source Code Pro"
-                               :size 16
+   dotspacemacs-default-font '("Hack"
+                               :size 18
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -312,9 +314,66 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
+
   (setq-default evil-escape-key-sequence "jk")
   (add-hook 'prog-mode-hook #'auto-fill-mode)
   (add-hook 'text-mode-hook #'auto-fill-mode)
+
+
+  (defun LaTeX-indent-item ()
+    "Provide proper indentation for LaTeX \"itemize\",\"enumerate\", and
+\"description\" environments.
+
+  \"\\item\" is indented `LaTeX-indent-level' spaces relative to
+  the the beginning of the environment.
+
+  Continuation lines are indented either twice
+  `LaTeX-indent-level', or `LaTeX-indent-level-item-continuation'
+  if the latter is bound."
+    (save-match-data
+      (let* ((offset LaTeX-indent-level)
+             (contin (or (and (boundp 'LaTeX-indent-level-item-continuation)
+                              LaTeX-indent-level-item-continuation)
+                         (* 2 LaTeX-indent-level)))
+             (re-beg "\\\\begin{")
+             (re-end "\\\\end{")
+             (re-env "\\(itemize\\|\\enumerate\\|description\\)")
+             (indent (save-excursion
+                       (when (looking-at (concat re-beg re-env "}"))
+                         (end-of-line))
+                       (LaTeX-find-matching-begin)
+                       (current-column))))
+        (cond ((looking-at (concat re-beg re-env "}"))
+               (or (save-excursion
+                     (beginning-of-line)
+                     (ignore-errors
+                       (LaTeX-find-matching-begin)
+                       (+ (current-column)
+                          (if (looking-at (concat re-beg re-env "}"))
+                              contin
+                            offset))))
+                   indent))
+              ((looking-at (concat re-end re-env "}"))
+               indent)
+              ((looking-at "\\\\item")
+               (+ offset indent))
+              (t
+               (+ contin indent))))))
+
+  (defcustom LaTeX-indent-level-item-continuation 4
+    "*Indentation of continuation lines for items in itemize-like
+environments."
+    :group 'LaTeX-indentation
+    :type 'integer)
+
+  (eval-after-load "latex"
+    '(setq LaTeX-indent-environment-list
+           (nconc '(("itemize" LaTeX-indent-item)
+                    ("enumerate" LaTeX-indent-item)
+                    ("description" LaTeX-indent-item))
+                  LaTeX-indent-environment-list)))
+
+  ;;
   )
 
 (defun dotspacemacs/user-config ()
@@ -325,7 +384,8 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
-
+  (add-hook 'spacemacs-buffer-mode-hook (lambda ()
+                                          (set (make-local-variable 'mouse-1-click-follows-link) nil)))
   ;; Set Zathura as the standard pdf-viewer for latex
   (setq TeX-source-correlate-mode t)
   (setq TeX-source-correlate-start-server t)
@@ -368,7 +428,7 @@ you should place your code here."
  '(magit-diff-use-overlays nil)
  '(package-selected-packages
    (quote
-    (helm-company helm-c-yasnippet fuzzy company-web web-completion-data company-statistics company-auctex company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete flyspell-popup wolfram-mode thrift stan-mode scad-mode qml-mode matlab-mode julia-mode arduino-mode evil-replace-with-register simple-httpd xterm-color unfill shell-pop mwim multi-term eshell-z eshell-prompt-extras esh-help flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck auto-dictionary auctex-latexmk auctex web-beautify impatient-mode skewer-mode yapfify web-mode tagedit smeargle slim-mode scss-mode sass-mode pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc markdown-mode magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md evil-magit magit magit-popup git-commit with-editor emmet-mode cython-mode anaconda-mode pythonic dracula-theme ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
+    (livid-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc company-tern tern coffee-mode dash-functional helm-company helm-c-yasnippet fuzzy company-web web-completion-data company-statistics company-auctex company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete flyspell-popup wolfram-mode thrift stan-mode scad-mode qml-mode matlab-mode julia-mode arduino-mode evil-replace-with-register simple-httpd xterm-color unfill shell-pop mwim multi-term eshell-z eshell-prompt-extras esh-help flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck auto-dictionary auctex-latexmk auctex web-beautify impatient-mode skewer-mode yapfify web-mode tagedit smeargle slim-mode scss-mode sass-mode pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc markdown-mode magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md evil-magit magit magit-popup git-commit with-editor emmet-mode cython-mode anaconda-mode pythonic dracula-theme ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
  '(pos-tip-background-color "#FFFACE")
  '(pos-tip-foreground-color "#272822")
  '(vc-annotate-background nil)
