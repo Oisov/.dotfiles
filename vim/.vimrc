@@ -32,6 +32,7 @@ Plug 'vim-scripts/ReplaceWithRegister' "gr[motion]
 Plug 'vim-airline/vim-airline-themes' "Themes for airline
 Plug 'altercation/vim-colors-solarized'
 Plug 'tomasr/molokai'
+Plug 'dracula/vim', { 'as': 'dracula' }
  
 call plug#end()
  
@@ -50,12 +51,12 @@ endif
 set background=dark
 " let g:solarized_termcolors=256 "this is what fixed it for me
 " let g:solarized_termtrans = 1 "fixed the black bakground
-let g:airline_solarized_bg='dark'
+let g:airline_theme='dracula'
 " let g:airline_left_sep='>'
 " let g:airline_right_sep='<'
-let g:airline_powerline_fonts = 1
-let g:Powerline_symbols='unicode'
-colorscheme solarized
+" let g:airline_powerline_fonts = 1
+" let g:Powerline_symbols='unicode'
+colorscheme dracula
  
 " Plugin specific features
 augroup latexSurround

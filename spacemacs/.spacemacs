@@ -31,6 +31,8 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     csv
+     swift
      javascript
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
@@ -45,6 +47,7 @@ values."
      ;; auto-completion
      better-defaults
      emacs-lisp
+     common-lisp
      git
      markdown
      python
@@ -66,7 +69,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(impatient-mode evil-replace-with-register evil-surround
+   dotspacemacs-additional-packages '(markdown-toc impatient-mode evil-replace-with-register evil-surround
 )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -319,6 +322,14 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (add-hook 'prog-mode-hook #'auto-fill-mode)
   (add-hook 'text-mode-hook #'auto-fill-mode)
 
+  ;; Use UTF-8 for all character encoding.
+  (set-language-environment 'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-selection-coding-system 'utf-8)
+  (set-locale-environment "en.UTF-8")
+  (prefer-coding-system 'utf-8)
+  (setq utf-translate-cjk-mode nil) ; disable CJK coding/encoding
+
 
   (defun LaTeX-indent-item ()
     "Provide proper indentation for LaTeX \"itemize\",\"enumerate\", and
@@ -373,6 +384,17 @@ environments."
                     ("description" LaTeX-indent-item))
                   LaTeX-indent-environment-list)))
 
+  ;; (eval-after-load "tex"
+  ;;   '(progn
+  ;;      (add-to-list
+  ;;       'TeX-engine-alist
+  ;;       '(default-shell-escape "Default with shell escape"
+  ;;          "pdftex -shell-escape"
+  ;;          "pdflatex -shell-escape"
+  ;;          ConTeXt-engine))
+  ;;      (setq-default TeX-engine 'default-shell-escape)
+  ;;      ))
+
   ;;
   )
 
@@ -385,7 +407,10 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
   (add-hook 'spacemacs-buffer-mode-hook (lambda ()
-                                          (set (make-local-variable 'mouse-1-click-follows-link) nil)))
+                                          (set (make-local-variable
+                                                'mouse-1-click-follows-link) nil)))
+  (require 'helm-bookmark)
+
   ;; Set Zathura as the standard pdf-viewer for latex
   (setq TeX-source-correlate-mode t)
   (setq TeX-source-correlate-start-server t)
@@ -428,7 +453,7 @@ you should place your code here."
  '(magit-diff-use-overlays nil)
  '(package-selected-packages
    (quote
-    (livid-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc company-tern tern coffee-mode dash-functional helm-company helm-c-yasnippet fuzzy company-web web-completion-data company-statistics company-auctex company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete flyspell-popup wolfram-mode thrift stan-mode scad-mode qml-mode matlab-mode julia-mode arduino-mode evil-replace-with-register simple-httpd xterm-color unfill shell-pop mwim multi-term eshell-z eshell-prompt-extras esh-help flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck auto-dictionary auctex-latexmk auctex web-beautify impatient-mode skewer-mode yapfify web-mode tagedit smeargle slim-mode scss-mode sass-mode pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc markdown-mode magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md evil-magit magit magit-popup git-commit with-editor emmet-mode cython-mode anaconda-mode pythonic dracula-theme ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
+    (slime-company slime common-lisp-snippets csv-mode swift-mode livid-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc company-tern tern coffee-mode dash-functional helm-company helm-c-yasnippet fuzzy company-web web-completion-data company-statistics company-auctex company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete flyspell-popup wolfram-mode thrift stan-mode scad-mode qml-mode matlab-mode julia-mode arduino-mode evil-replace-with-register simple-httpd xterm-color unfill shell-pop mwim multi-term eshell-z eshell-prompt-extras esh-help flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck auto-dictionary auctex-latexmk auctex web-beautify impatient-mode skewer-mode yapfify web-mode tagedit smeargle slim-mode scss-mode sass-mode pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc markdown-mode magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md evil-magit magit magit-popup git-commit with-editor emmet-mode cython-mode anaconda-mode pythonic dracula-theme ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
  '(pos-tip-background-color "#FFFACE")
  '(pos-tip-foreground-color "#272822")
  '(vc-annotate-background nil)
