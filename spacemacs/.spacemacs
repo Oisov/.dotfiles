@@ -31,46 +31,32 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
-     csv
-     swift
-     javascript
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      helm
-     (shell
-      :variables
-      shell-default-shell 'term
-      shell-default-term-shell "/bin/zsh")
      ;; auto-completion
-     better-defaults
+     ;; better-defaults
      emacs-lisp
-     common-lisp
      git
      markdown
-     python
-     extra-langs
-     (latex
-      :variables
-      latex-enable-auto-fill t)
-     html
-     org
-     (spell-checking
-      :variables
-      spell-checking-enable-by-default nil
-      enable-flyspell-auto-completion t)
-     syntax-checking
-     auto-completion
+     ;; org
+     (latex :variables latex-enable-auto-fill t)
+     (shell :variables
+            shell-default-term-shell "/bin/zsh"
+            shell-default-height 30
+            shell-default-position 'bottom)
+     ;; spell-checking
+     ;; syntax-checking
      ;; version-control
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(markdown-toc impatient-mode evil-replace-with-register evil-surround
-)
+   dotspacemacs-additional-packages '(evil-replace-with-register evil-surround)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -143,14 +129,14 @@ values."
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(dracula
-                         monokai
-                         spacemacs-dark)
+                         spacemacs-dark
+                         spacemacs-light)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("Hack"
-                               :size 18
+   dotspacemacs-default-font '("Source Code Pro"
+                               :size 13
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -318,84 +304,6 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
 
-  (setq-default evil-escape-key-sequence "jk")
-  (add-hook 'prog-mode-hook #'auto-fill-mode)
-  (add-hook 'text-mode-hook #'auto-fill-mode)
-
-  ;; Use UTF-8 for all character encoding.
-  (set-language-environment 'utf-8)
-  (set-default-coding-systems 'utf-8)
-  (set-selection-coding-system 'utf-8)
-  (set-locale-environment "en.UTF-8")
-  (prefer-coding-system 'utf-8)
-  (setq utf-translate-cjk-mode nil) ; disable CJK coding/encoding
-
-
-  (defun LaTeX-indent-item ()
-    "Provide proper indentation for LaTeX \"itemize\",\"enumerate\", and
-\"description\" environments.
-
-  \"\\item\" is indented `LaTeX-indent-level' spaces relative to
-  the the beginning of the environment.
-
-  Continuation lines are indented either twice
-  `LaTeX-indent-level', or `LaTeX-indent-level-item-continuation'
-  if the latter is bound."
-    (save-match-data
-      (let* ((offset LaTeX-indent-level)
-             (contin (or (and (boundp 'LaTeX-indent-level-item-continuation)
-                              LaTeX-indent-level-item-continuation)
-                         (* 2 LaTeX-indent-level)))
-             (re-beg "\\\\begin{")
-             (re-end "\\\\end{")
-             (re-env "\\(itemize\\|\\enumerate\\|description\\)")
-             (indent (save-excursion
-                       (when (looking-at (concat re-beg re-env "}"))
-                         (end-of-line))
-                       (LaTeX-find-matching-begin)
-                       (current-column))))
-        (cond ((looking-at (concat re-beg re-env "}"))
-               (or (save-excursion
-                     (beginning-of-line)
-                     (ignore-errors
-                       (LaTeX-find-matching-begin)
-                       (+ (current-column)
-                          (if (looking-at (concat re-beg re-env "}"))
-                              contin
-                            offset))))
-                   indent))
-              ((looking-at (concat re-end re-env "}"))
-               indent)
-              ((looking-at "\\\\item")
-               (+ offset indent))
-              (t
-               (+ contin indent))))))
-
-  (defcustom LaTeX-indent-level-item-continuation 4
-    "*Indentation of continuation lines for items in itemize-like
-environments."
-    :group 'LaTeX-indentation
-    :type 'integer)
-
-  (eval-after-load "latex"
-    '(setq LaTeX-indent-environment-list
-           (nconc '(("itemize" LaTeX-indent-item)
-                    ("enumerate" LaTeX-indent-item)
-                    ("description" LaTeX-indent-item))
-                  LaTeX-indent-environment-list)))
-
-  ;; (eval-after-load "tex"
-  ;;   '(progn
-  ;;      (add-to-list
-  ;;       'TeX-engine-alist
-  ;;       '(default-shell-escape "Default with shell escape"
-  ;;          "pdftex -shell-escape"
-  ;;          "pdflatex -shell-escape"
-  ;;          ConTeXt-engine))
-  ;;      (setq-default TeX-engine 'default-shell-escape)
-  ;;      ))
-
-  ;;
   )
 
 (defun dotspacemacs/user-config ()
@@ -406,10 +314,15 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
-  (add-hook 'spacemacs-buffer-mode-hook (lambda ()
-                                          (set (make-local-variable
-                                                'mouse-1-click-follows-link) nil)))
-  (require 'helm-bookmark)
+  (require 'evil-replace-with-register)
+  ;; change default key bindings (if you want) HERE
+  (setq evil-replace-with-register-key (kbd "gr"))
+  (evil-replace-with-register-install)
+
+  (use-package evil-surround
+    :ensure t
+    :config
+    (global-evil-surround-mode 1))
 
   ;; Set Zathura as the standard pdf-viewer for latex
   (setq TeX-source-correlate-mode t)
@@ -421,7 +334,10 @@ you should place your code here."
             (mode-io-correlate
              " --synctex-forward %n:0:%b -x \"emacsclient +%{line} %{input}\"")))))
   (setq TeX-view-program-selection '((output-pdf "Zathura")))
+
   ;; No code past here
+
+
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -433,56 +349,12 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
    ["#0a0814" "#f2241f" "#67b11d" "#b1951d" "#4f97d7" "#a31db1" "#28def0" "#b2b2b2"])
- '(compilation-message-face (quote default))
- '(custom-safe-themes
-   (quote
-    ("ff7625ad8aa2615eae96d6b4469fcc7d3d20b2e1ebc63b761a349bebbb9d23cb" default)))
- '(evil-want-Y-yank-to-eol nil)
- '(fci-rule-color "#3C3D37" t)
- '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
- '(highlight-tail-colors
-   (quote
-    (("#3C3D37" . 0)
-     ("#679A01" . 20)
-     ("#4BBEAE" . 30)
-     ("#1DB4D0" . 50)
-     ("#9A8F21" . 60)
-     ("#A75B00" . 70)
-     ("#F309DF" . 85)
-     ("#3C3D37" . 100))))
- '(magit-diff-use-overlays nil)
  '(package-selected-packages
    (quote
-    (slime-company slime common-lisp-snippets csv-mode swift-mode livid-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc company-tern tern coffee-mode dash-functional helm-company helm-c-yasnippet fuzzy company-web web-completion-data company-statistics company-auctex company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete flyspell-popup wolfram-mode thrift stan-mode scad-mode qml-mode matlab-mode julia-mode arduino-mode evil-replace-with-register simple-httpd xterm-color unfill shell-pop mwim multi-term eshell-z eshell-prompt-extras esh-help flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck auto-dictionary auctex-latexmk auctex web-beautify impatient-mode skewer-mode yapfify web-mode tagedit smeargle slim-mode scss-mode sass-mode pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc markdown-mode magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md evil-magit magit magit-popup git-commit with-editor emmet-mode cython-mode anaconda-mode pythonic dracula-theme ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
- '(pos-tip-background-color "#FFFACE")
- '(pos-tip-foreground-color "#272822")
- '(vc-annotate-background nil)
- '(vc-annotate-color-map
-   (quote
-    ((20 . "#F92672")
-     (40 . "#CF4F1F")
-     (60 . "#C26C0F")
-     (80 . "#E6DB74")
-     (100 . "#AB8C00")
-     (120 . "#A18F00")
-     (140 . "#989200")
-     (160 . "#8E9500")
-     (180 . "#A6E22E")
-     (200 . "#729A1E")
-     (220 . "#609C3C")
-     (240 . "#4E9D5B")
-     (260 . "#3C9F79")
-     (280 . "#A1EFE4")
-     (300 . "#299BA6")
-     (320 . "#2896B5")
-     (340 . "#2790C3")
-     (360 . "#66D9EF"))))
- '(vc-annotate-very-old-color nil)
- '(weechat-color-list
-   (unspecified "#272822" "#3C3D37" "#F70057" "#F92672" "#86C30D" "#A6E22E" "#BEB244" "#E6DB74" "#40CAE4" "#66D9EF" "#FB35EA" "#FD5FF0" "#74DBCD" "#A1EFE4" "#F8F8F2" "#F8F8F0")))
+    (smeargle orgit mmm-mode markdown-toc markdown-mode magit-gitflow helm-gitignore helm-company helm-c-yasnippet gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy evil-magit magit magit-popup git-commit ghub with-editor company-statistics company-auctex company auto-yasnippet yasnippet ac-ispell auto-complete Dracula-theme auctex-latexmk auctex evil-replace-with-register xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help dracula-theme ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((((class color) (min-colors 257)) (:foreground "#F8F8F2" :background "#272822" :family "Source Code Pro" :foundry "ADBO" :slant normal :weight normal :height 154 :width normal)) (((class color) (min-colors 89)) (:foreground "#F5F5F5" :background "#1B1E1C" :family "Source Code Pro" :foundry "ADBO" :slant normal :weight normal :height 154 :width normal)))))
+ '(default ((((type tty)) (:background "#000000" :foreground "#f8f8f2")) (((type graphic)) (:background "#282a36" :foreground "#f8f8f2")))))
