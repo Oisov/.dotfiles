@@ -1,10 +1,6 @@
 export VISUAL=vim
 export EDITOR="$VISUAL"
 
-export PATH="/home/oisov/.pyenv/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
 HISTSIZE=1000
