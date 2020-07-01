@@ -8,8 +8,8 @@
 #Basic settings, please see http://i3wm.org/docs/userguide.html for a complete reference!
 
 
-set $browser-work chromium
-set $browser-play firefox
+set $browser-work firefox 
+set $browser-play chromium-browser
  
 set $term konsole
 set $mod Mod4
@@ -63,7 +63,9 @@ set $mod Mod4
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
 font pango:Helvetica Neue, FontAwesome 11
- 
+
+# exec_always compton --config ~/.config/compton/compton.conf
+# opacity-rule = ["85:class_g = 'Zathura'"];
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 #font pango:DejaVu Sans Mono 8
@@ -77,6 +79,10 @@ bindsym $mod+Return      exec $term
 # Start the browsers
 bindsym $mod+b           exec --no-startup-id $browser-play
 bindsym $mod+w           exec --no-startup-id $browser-work
+
+bindsym $mod+Shift+w           exec --no-startup-id $browser-play --app=https://www.google.com
+bindsym $mod+Shift+t           exec --no-startup-id google-chrome --app=https://www.twitch.tv
+bindsym $mod+Shift+b           exec --no-startup-id $browser-play --incognito --app=https://www.pornhub.com
 
 # Start ranger
 bindsym $mod+r          exec /bin/zsh $term -e ranger
@@ -93,8 +99,8 @@ bindsym $mod+Shift+q kill
 # rofi
 bindsym $mod+d exec rofi
 
-bindsym $mod+Shift+d    gaps inner current set 0; gaps outer current set 0
-bindsym $mod+Shift+t    gaps inner current set $gaps_inner; gaps outer current set $gaps_outer
+# bindsym $mod+Shift+d    gaps inner current set 0; gaps outer current set 0
+# bindsym $mod+Shift+t    gaps inner current set $gaps_inner; gaps outer current set $gaps_outer
 
 # Screenshot (now provided by Plasma)
 bindsym Print exec --no-startup-id spectacle
@@ -202,10 +208,11 @@ bindsym $mod+Shift+r restart
 # bindsym XF86AudioRaiseVolume exec ~/audio.sh --up
 
 # Use YUIO to resize instead of resize mode
-bindsym $mod+Shift+y	resize shrink width 10 px or 5 ppt
-bindsym $mod+Shift+u	resize grow height 10 px or 5 ppt
-bindsym $mod+Shift+i	resize shrink height 10 px or 5 ppt
-bindsym $mod+Shift+o	resize grow width 10 px or 5 ppt
+bindsym $mod+Shift+y	resize shrink width 5 px or 1 ppt
+bindsym $mod+Shift+u	resize grow height 5 px or 1 ppt
+bindsym $mod+Shift+i	resize shrink height 5 px or 1 ppt
+bindsym $mod+Shift+o	resize grow width 5 px or 1 ppt
+
 
 
 # resize window (you can also use the mouse for that)
@@ -247,12 +254,13 @@ bindsym $mod+c mode "resize"
 #}
 
 # Starting things with i3
+exec --no-startup-id play-with-mpv
 #Makes the mouse invisible after a brief period
 exec --no-startup-id unclutter
 exec --no-startup-id xcompmgr -C &    # Bare compositor to allow transparency
 for_window [class="yakuake"] floating enable;
 
-bindsym Mod1+Return exec --no-startup-id yakuake
+bindsym Mod1+Shift+Return exec --no-startup-id yakuake
 
 ## Plasma Integration
 # Try to kill the wallpaper set by Plasma (it takes up the entire workspace and hides everythiing)
@@ -263,6 +271,11 @@ bindsym Mod1+e       exec emacsclient -n -c
 
 # Run at every restart of i3
 exec_always --no-startup-id feh --bg-scale ~/Pictures/Wallpaper/forest.jpg
+exec_always --no-startup-id i8kmon
+
+# Compton
+exec_always --no-startup-id killall -q compton; compton --config ~/.config/compton/compton.conf
+
 #Sets the default wallpaper
 exec_always --no-startup-id conky -dq -c ~/.conkyrc
 # exec_always exec conky
